@@ -1,30 +1,16 @@
-# 🌎 Global Cross-border Trade Terminal
+# 🌐 Global Trade Hub · 全球跨境贸易中控台
 
-🚀 **Live App:** [Click here to try the App](my-global-trade.streamlit.app)
+跨境卖家一体化工具：利润测算、选品库、3D 全球物流地图、22 国语言、AI 多国文案、PDF 报价单关键信息提取。
 
-## 💡 About The Project
-This is a comprehensive, cloud-deployed cross-border e-commerce assistant built entirely from scratch. 
+## 功能
+- 📦 **利润与预测** — 实时利润率、汇率换算
+- 📊 **选品库** — CSV 本地持久化
+- 🌍 **全球战情室** — pydeck 3D 飞线物流雷达
+- 💼 **多国文案** — AI 生成多语言 Listing
+- 📄 **PDF 提取** — 上传供应商报价单，AI 自动提取产品名称/单价/起订量/总价
 
-As a 15-year-old student passionate about global trade, I created this tool to solve real-world problems for e-commerce sellers. It combines real-time data, automated calculations, and cutting-edge AI to streamline the product selection and listing process.
-
-## ✨ Core Features
-- **📦 Live Profit Calculator:** Instantly calculate true profit by factoring in international shipping costs, platform fees, and real-time currency exchange rates.
-- **📊 Product Vault:** Save tested products to a local database and automatically rank them by highest profit margin.
-- **💱 Real-time Exchange Rates:** Fetch up-to-the-minute global exchange rates to ensure accurate cross-border pricing.
-- **💼 Cloud AI Copywriter:** Integrated with the ultra-fast Groq API (Llama 3 / GPT-OSS). Generate high-converting e-commerce copy and selling points in over 20 languages instantly.
-
-## 🛠️ Tech Stack
-- **Frontend/Backend:** Streamlit (Python)
-- **Data Processing:** Pandas
-- **AI Engine:** Groq API
-- **Currency Data:** Open Exchange Rates API
-
-## 🌐 Multi-Language Support
-The app features a highly modular translation dictionary, currently supporting over 20 global languages for both the user interface and AI generation, including English, Chinese, Malay, Spanish, Arabic, Japanese, and more.
-
-## 🚀 How to Run Locally
-If you want to run this project on your own machine:
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/jdapo873-design/Global-trade-app.git
+## 运行
+```bash
+pip install -r requirements.txt
+export GROQ_API_KEY='gsk_xxx'
+streamlit run my_software.py
