@@ -64,6 +64,35 @@ for _lang, _label in _COMPARE_TAB_LABELS.items():
     if _lang in UI_TRANSLATIONS:
         UI_TRANSLATIONS[_lang]["t6"] = _label
 
+_EXTRA_TAB_LABELS = {
+    "简体中文": ("💰 利润沙盘", "🔍 选品雷达"),
+    "English": ("💰 Sandbox", "🔍 Product Radar"),
+    "Bahasa Melayu": ("💰 Simulasi Untung", "🔍 Radar Produk"),
+    "Español": ("💰 Simulador", "🔍 Radar de Productos"),
+    "繁體中文": ("💰 利潤沙盤", "🔍 選品雷達"),
+    "Bahasa Indonesia": ("💰 Simulasi Laba", "🔍 Radar Produk"),
+    "Français": ("💰 Simulateur", "🔍 Radar Produits"),
+    "Deutsch": ("💰 Sandbox", "🔍 Produkt-Radar"),
+    "Italiano": ("💰 Simulatore", "🔍 Radar Prodotti"),
+    "Português": ("💰 Simulador", "🔍 Radar de Produtos"),
+    "Русский": ("💰 Песочница", "🔍 Радар товаров"),
+    "日本語": ("💰 利益シミュレーター", "🔍 商品レーダー"),
+    "한국어": ("💰 수익 샌드박스", "🔍 상품 레이더"),
+    "ไทย": ("💰 จำลองกำไร", "🔍 เรดาร์สินค้า"),
+    "Tiếng Việt": ("💰 Mô phỏng", "🔍 Radar sản phẩm"),
+    "Türkçe": ("💰 Simülasyon", "🔍 Ürün Radarı"),
+    "العربية": ("💰 محاكاة", "🔍 رادار المنتجات"),
+    "हिन्दी": ("💰 सिम्युलेटर", "🔍 उत्पाद रडार"),
+    "Nederlands": ("💰 Sandbox", "🔍 Productradar"),
+    "Polski": ("💰 Symulacja", "🔍 Radar produktów"),
+    "Українська": ("💰 Симулятор", "🔍 Радар товарів"),
+    "Tagalog": ("💰 Simulator", "🔍 Product Radar"),
+}
+for _lang, (_t7, _t8) in _EXTRA_TAB_LABELS.items():
+    if _lang in UI_TRANSLATIONS:
+        UI_TRANSLATIONS[_lang]["t7"] = _t7
+        UI_TRANSLATIONS[_lang]["t8"] = _t8
+
 col_lang, col_theme = st.columns([4, 1])
 with col_lang:
     ui_lang = st.selectbox("🌐 界面语言 / Language", list(UI_TRANSLATIONS.keys()), label_visibility="collapsed")
@@ -418,8 +447,7 @@ def load_vault():
         return pd.DataFrame(columns=VAULT_COLUMNS)
     if df.empty:
         return pd.DataFrame(columns=VAULT_COLUMNS)
-    for col in VAULT_COLUMNS:
-        if col not in df.columns:
+    for col in VAULT_COLUMNS:        if col not in df.columns:
             df[col] = pd.NA
     for col in ("Cost", "Sell", "Profit", "Margin"):
         df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -443,7 +471,9 @@ def show_df(df, height=400):
         st.dataframe(df, use_container_width=True, height=height)
 
 # ================= 4. 核心模块 =================
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([t["t1"], t["t2"], t["t3"], t["t4"], t["t5"], t["t6"]])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
+    [t["t1"], t["t2"], t["t3"], t["t4"], t["t5"], t["t6"], t["t7"], t["t8"]]
+)
 
 # 页面 1：利润与预测
 with tab1:
@@ -616,8 +646,7 @@ def extract_pdf_text(file_bytes):
     if not HAS_PYPDF:
         return None, 0, "未安装 pypdf，请在终端执行: pip install pypdf"
     import io
-    try:
-        reader = PdfReader(io.BytesIO(file_bytes))
+    try:        reader = PdfReader(io.BytesIO(file_bytes))
         if reader.is_encrypted:
             try:
                 reader.decrypt("")
@@ -815,9 +844,7 @@ def render_reverse_dashboard(data, p):
     hero = (
         f'<div class="br-hero"><div><div class="k">Business Reverse Engineering</div>'
         f'<div class="v">{product}</div></div><div class="tag">{currency}</div></div>'
-    )
-
-    # ---- 成本拆解 ----
+    )    # ---- 成本拆解 ----
     colors = [p["accent"], p["accent2"], p["good"], p["warn"], p["bad"]]
     bars = ""
     for idx, item in enumerate(_br_list(cost.get("breakdown"))[:5]):
@@ -1016,8 +1043,7 @@ with tab5:
                 "⬇ 导出分析 JSON",
                 data=json.dumps(st.session_state["reverse_data"], ensure_ascii=False, indent=2),
                 file_name="reverse_engineering.json",
-                mime="application/json",
-                key="dl_reverse",
+                mime="application/json",                key="dl_reverse",
             )
         elif st.session_state.get("reverse_raw"):
             st.warning("AI 返回的不是标准 JSON，先展示原始内容：")
@@ -1216,8 +1242,7 @@ def build_compare_report(records, is_dark):
 
     return f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><title>供应商比价报告</title>
-<style>
-body{{margin:0;padding:40px;background:{bg};color:{fg};font:14px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}}
+<style>body{{margin:0;padding:40px;background:{bg};color:{fg};font:14px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}}
 h1{{font-size:28px;margin:0 0 4px;letter-spacing:-.5px;color:{gold}}}
 .meta{{color:{muted};font-size:12px;margin-bottom:26px}}
 table{{width:100%;border-collapse:collapse;background:{card};border:1px solid {border};border-radius:12px;overflow:hidden}}
@@ -1311,3 +1336,293 @@ with tab6:
                     f"- **{_h.get('ts', '—')}** · {_h.get('product', '—')} · "
                     f"{_h.get('count', 0)} 家 · 推荐 **{_h.get('best', '—')}**"
                 )
+
+
+# ================= 7. 利润沙盘 / 选品雷达（可视化增强） =================
+RADAR_PROMPT = """你是跨境电商选品专家。请针对下面的品类与目标市场，给出 6-8 个具体可做的产品方向。
+严格只输出一个 JSON（不要 Markdown 代码块、不要解释）：
+{
+  "category": "品类",
+  "market": "目标市场",
+  "products": [
+    {"name": "产品名", "demand": 78, "competition": 45, "margin": 55,
+     "price_low": 12, "price_high": 19,
+     "reason": "为什么有需求（20 字内）", "risk": "主要风险（20 字内）", "score": 74}
+  ],
+  "summary": "一句话总结（30 字内）"
+}
+要求：
+1. demand / competition / margin / score 均为 0-100 的整数。
+2. price_low / price_high 用纯数字（统一按 USD 估算）。
+3. 产品要具体可落地（不要写「家居用品」这种大类），要能对应到具体工厂与平台。
+4. reason 与 risk 必须具体，禁止编造品牌名或具体供应商。
+"""
+
+
+def build_radar_prompt(category, market, budget):
+    return (
+        RADAR_PROMPT
+        + f"\n品类：{category}\n目标市场：{market}\n目标客单价：{budget} USD 左右\n"
+    )
+
+
+def _quadrant_label(demand, competition):
+    if demand >= 55 and competition < 55:
+        return "蓝海机会", "#4FB28C"
+    if demand >= 55 and competition >= 55:
+        return "红海竞争", "#E0A64B"
+    if demand < 55 and competition < 55:
+        return "小众待教育", "#8FB3D9"
+    return "不建议", "#E06C5A"
+
+
+def _svg_line_chart(points, p, markers, w=780, h=330, pad=54):
+    """价格-利润曲线（纯 SVG，跟随主题）。markers: [(x, label, color)]"""
+    xs = [x for x, _ in points]
+    ys = [y for _, y in points]
+    xmin, xmax = min(xs), max(xs)
+    if xmax == xmin:
+        xmax = xmin + 1
+    ymin = min(min(ys), 0.0)
+    ymax = max(max(ys), 0.0)
+    if ymax == ymin:
+        ymax = ymin + 1
+
+    def sx(x):
+        return pad + (x - xmin) / (xmax - xmin) * (w - pad * 2)
+
+    def sy(y):
+        return h - pad - (y - ymin) / (ymax - ymin) * (h - pad * 2)
+
+    line = " ".join(f"{sx(x):.1f},{sy(y):.1f}" for x, y in points)
+    zero = sy(max(ymin, min(0.0, ymax)))
+    area = f"{sx(xs[0]):.1f},{zero:.1f} " + line + f" {sx(xs[-1]):.1f},{zero:.1f}"
+
+    grid = ""
+    for i in range(5):
+        y = ymin + (ymax - ymin) * i / 4
+        yy = sy(y)
+        grid += f'<line x1="{pad}" y1="{yy:.1f}" x2="{w - pad}" y2="{yy:.1f}" stroke="{p["border"]}" stroke-width="1"/>'
+        grid += f'<text x="{pad - 8}" y="{yy + 4:.1f}" text-anchor="end" font-size="10" fill="{p["muted"]}">{y:,.0f}</text>'
+
+    mk = ""
+    for mx, label, color in markers:
+        if mx is None or not (xmin <= mx <= xmax):
+            continue
+        xx = sx(mx)
+        mk += (
+            f'<line x1="{xx:.1f}" y1="{pad}" x2="{xx:.1f}" y2="{h - pad}" stroke="{color}" '
+            f'stroke-width="1.2" stroke-dasharray="4 4" opacity=".85"/>'
+            f'<text x="{xx:.1f}" y="{pad - 8}" text-anchor="middle" font-size="10" fill="{color}">{label}</text>'
+        )
+
+    return f"""<svg viewBox="0 0 {w} {h}" width="100%" height="{h}" role="img">
+<defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="{p['accent']}" stop-opacity=".28"/>
+<stop offset="100%" stop-color="{p['accent']}" stop-opacity="0"/>
+</linearGradient></defs>
+{grid}{mk}
+<line x1="{pad}" y1="{zero:.1f}" x2="{w - pad}" y2="{zero:.1f}" stroke="{p['muted']}" stroke-width="1" opacity=".5"/>
+<polygon points="{area}" fill="url(#gArea)"/>
+<polyline points="{line}" fill="none" stroke="{p['accent']}" stroke-width="2.4" stroke-linejoin="round"/>
+</svg>"""
+
+
+def _svg_bubble_chart(items, p, w=780, h=430, pad=56):
+    """需求(x=竞争, y=需求)气泡矩阵，气泡大小 = 毛利。"""
+    body = ""
+    # 象限底色
+    mid = (pad + (w - pad)) / 2
+    midy = (pad + (h - pad)) / 2
+    body += (
+        f'<rect x="{pad}" y="{pad}" width="{mid - pad}" height="{midy - pad}" fill="{p["good"]}" opacity=".05"/>'
+        f'<rect x="{mid}" y="{pad}" width="{w - pad - mid}" height="{midy - pad}" fill="{p["warn"]}" opacity=".05"/>'
+        f'<rect x="{pad}" y="{midy}" width="{mid - pad}" height="{h - pad - midy}" fill="{p["muted"]}" opacity=".05"/>'
+        f'<rect x="{mid}" y="{midy}" width="{w - pad - mid}" height="{h - pad - midy}" fill="{p["bad"]}" opacity=".05"/>'
+    )
+    labels = [("低竞争 · 高需求", pad + 10, pad + 20), ("高竞争 · 高需求", mid + 10, pad + 20),
+              ("低竞争 · 低需求", pad + 10, h - pad - 8), ("高竞争 · 低需求", mid + 10, h - pad - 8)]    for text, x, y in labels:
+        body += f'<text x="{x}" y="{y}" font-size="10" fill="{p["muted"]}" opacity=".8">{text}</text>'
+
+    body += (
+        f'<line x1="{pad}" y1="{h - pad}" x2="{w - pad}" y2="{h - pad}" stroke="{p["border"]}"/>'
+        f'<line x1="{pad}" y1="{pad}" x2="{pad}" y2="{h - pad}" stroke="{p["border"]}"/>'
+        f'<text x="{w / 2}" y="{h - 14}" text-anchor="middle" font-size="10.5" fill="{p["muted"]}">竞争强度 →</text>'
+        f'<text x="16" y="{h / 2}" text-anchor="middle" font-size="10.5" fill="{p["muted"]}" transform="rotate(-90 16 {h / 2})">需求 →</text>'
+    )
+
+    for it in items:
+        comp = max(0.0, min(100.0, _br_num(it.get("competition"))))
+        dem = max(0.0, min(100.0, _br_num(it.get("demand"))))
+        mar = max(0.0, min(100.0, _br_num(it.get("margin"))))
+        x = pad + comp / 100 * (w - pad * 2)
+        y = h - pad - dem / 100 * (h - pad * 2)
+        r = 11 + mar / 100 * 20
+        _, color = _quadrant_label(dem, comp)
+        name = _br_txt(it.get("name"))[:14]
+        body += (
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" fill="{color}" opacity=".22"/>'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}" fill="none" stroke="{color}" stroke-width="1.6"/>'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{color}"/>'
+            f'<text x="{x:.1f}" y="{y - r - 5:.1f}" text-anchor="middle" font-size="10.5" fill="{p["text"]}">{name}</text>'
+        )
+    return f'<svg viewBox="0 0 {w} {h}" width="100%" height="{h}" role="img">{body}</svg>'
+
+
+# ================= 8. 利润沙盘 =================
+with tab7:
+    st.markdown("### 💰 利润沙盘")
+    st.caption("拖动价格与参数，实时看「预估月利润」曲线 —— 曲线最高点就是最优定价。")
+
+    c1, c2, c3, c4 = st.columns(4)
+    sb_cost = c1.number_input("进价成本", min_value=0.0, value=25.0, step=1.0, key="sb_cost")
+    sb_ship = c2.number_input("运费 / 件", min_value=0.0, value=8.0, step=0.5, key="sb_ship")
+    sb_fee = c3.number_input("平台抽成 %", min_value=0.0, max_value=100.0, value=10.0, step=0.5, key="sb_fee")
+    sb_units = c4.number_input("参考月销量（件）", min_value=1, value=300, step=50, key="sb_units")
+
+    c5, c6, c7 = st.columns([1, 1, 1.5])
+    sb_price = c5.number_input("当前售价", min_value=0.0, value=72.0, step=1.0, key="sb_price")
+    sb_cur = c6.selectbox("币种", currency_list, index=0, key="sb_cur")
+    sb_elast = c7.slider("价格敏感度（越高 = 涨价掉量越快）", 0.6, 3.0, 1.4, 0.1, key="sb_elast")
+
+    _base = sb_cost + sb_ship
+    _ref = max(sb_price, 1.0)
+
+    def _demand(price):
+        return sb_units * (_ref / max(price, 0.01)) ** sb_elast
+
+    def _total(price):
+        return (price * (1 - sb_fee / 100) - _base) * _demand(price)
+
+    _lo = max(1.0, _base * 0.8)
+    _hi = max(_ref * 2.2, _base * 3.0, _lo + 1)
+    _pts = []
+    for _i in range(61):
+        _bp = _lo + (_hi - _lo) * _i / 60
+        _pts.append((_bp, _total(_bp)))
+    _best_p, _best_total = max(_pts, key=lambda _t: _t[1])
+    _be = _base / (1 - sb_fee / 100) if sb_fee < 100 else None
+    _cur_profit = sb_price * (1 - sb_fee / 100) - _base
+    _cur_total = _total(sb_price)
+    _cur_margin = (_cur_profit / sb_price * 100) if sb_price > 0 else 0.0
+    _pal = _br_palette(is_dark, bg_color, text_color, card_bg, border_color)
+
+    st.markdown(
+        '<div class="sec"><i class="bullet"></i><span class="t">售价 → 预估月利润</span>'
+        '<span class="s">假设销量随价格按弹性衰减</span></div>',
+        unsafe_allow_html=True,
+    )
+    _chart = _svg_line_chart(
+        _pts, _pal,
+        [
+            (_be, "保本价", _pal["warn"]),
+            (_best_p, "最优价", _pal["good"]),
+            (sb_price, "当前价", _pal["accent"]),
+        ],
+    )
+    st.markdown(f'<div style="padding:8px 4px 0">{_chart}</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="kpi-row">'
+        f'<div class="kpi"><div class="k">当前月利润</div>'
+        f'<div class="v {"good" if _cur_total >= 0 else "bad"}">{_cur_total:,.0f} <small>{sb_cur}</small></div>'
+        f'<div class="d">单件 {_cur_profit:,.2f} × 约 {_demand(sb_price):,.0f} 件</div></div>'
+        f'<div class="kpi"><div class="k">保本价</div>'
+        f'<div class="v">{(f"{_be:,.2f}" if _be else "—")}</div>'
+        '<div class="d">低于此价每件都亏</div></div>'
+        f'<div class="kpi"><div class="k">最优价</div>'
+        f'<div class="v">{_best_p:,.2f}</div>'
+        f'<div class="d">月利润最高 {_best_total:,.0f}</div></div>'
+        f'<div class="kpi"><div class="k">当前毛利率</div>'
+        f'<div class="v {"good" if _cur_margin >= 0 else "bad"}">{_cur_margin:.1f}%</div>'
+        f'<div class="d">抽成 {sb_fee:.1f}%</div></div>'
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+    with st.expander("🔬 抽成敏感度（抽成每 +5%，利润怎么变）", expanded=False):
+        _rows = ""
+        for _f in range(0, 41, 5):
+            _pf = sb_price * (1 - _f / 100) - _base
+            _pt = _pf * _demand(sb_price)
+            _cls = "good" if _pf >= 0 else "bad"
+            _rows += (
+                f'<tr><td>{_f}%</td><td class="{_cls}">{_pf:,.2f}</td>'
+                f'<td class="{_cls}">{_pt:,.0f}</td>'
+                f'<td>{"✅ 可做" if _pf >= 0 else "❌ 亏本"}</td></tr>'
+            )
+        st.markdown(
+            '<table style="width:100%;border-collapse:collapse;font-size:13px">'
+            '<thead><tr><th style="text-align:left;opacity:.7">平台抽成</th>'
+            '<th style="text-align:left;opacity:.7">单件利润</th>'
+            '<th style="text-align:left;opacity:.7">月利润</th>'
+            '<th style="text-align:left;opacity:.7">结论</th></tr></thead>'
+            f"<tbody>{_rows}</tbody></table>",
+            unsafe_allow_html=True,
+        )
+
+with tab8:
+    st.markdown("### 🔍 选品雷达")
+    st.caption("输入品类与市场，AI 生成候选产品，并用「需求 × 竞争」矩阵帮你找蓝海。")
+
+    r1, r2, r3 = st.columns([2, 1.3, 1])
+    radar_cat = r1.text_input("品类 / 关键词", "宠物用品", key="radar_cat")
+    radar_market = r2.selectbox(
+        "目标市场",
+        ["Malaysia", "Indonesia", "Thailand", "Vietnam", "USA", "Saudi Arabia",
+         "Brazil", "UK", "Australia", "Global"],
+        index=0, key="radar_market",
+    )
+    radar_budget = r3.number_input("目标客单价 (USD)", min_value=1.0, value=20.0, step=1.0, key="radar_budget")
+
+    if st.button("🚀 扫描品类机会", key="radar_btn"):
+        with st.spinner("AI 正在扫描品类机会…"):
+            _raw = call_groq(build_radar_prompt(radar_cat, radar_market, radar_budget), 0.5, max_tokens=1800)
+        _data = parse_reverse_json(_raw) if not (isinstance(_raw, str) and _raw.startswith("❌")) else None
+        if _data and _data.get("products"):
+            st.session_state["radar_data"] = _data
+        else:
+            st.error(_raw if isinstance(_raw, str) else "AI 返回格式异常，请重试。")
+
+    _radar = st.session_state.get("radar_data")
+    if _radar:
+        _items = [x for x in _radar.get("products", []) if isinstance(x, dict)]
+        _pal = _br_palette(is_dark, bg_color, text_color, card_bg, border_color)
+        if _radar.get("summary"):
+            st.markdown(
+                f'<div style="margin:6px 0 10px;padding:10px 12px;border-left:2px solid {_pal["accent"]};'
+                f'background:{_pal["accent_soft"]};border-radius:10px;font-size:12px">'
+                f'💡 {_br_txt(_radar.get("summary"))}</div>',
+                unsafe_allow_html=True,
+            )
+        st.markdown(
+            f'<div style="padding:4px 2px">{_svg_bubble_chart(_items, _pal)}</div>',
+            unsafe_allow_html=True,
+        )
+        _list = ""
+        for _it in sorted(_items, key=lambda _x: -_br_num(_x.get("score")))[:8]:
+            _sc = _br_num(_it.get("score"))
+            _cls = "#4FB28C" if _sc >= 75 else ("#E0A64B" if _sc >= 55 else "#E06C5A")
+            _q, _qc = _quadrant_label(_br_num(_it.get("demand")), _br_num(_it.get("competition")))
+            _list += (
+                f'<div style="display:flex;gap:10px;align-items:flex-start;padding:11px 13px;'
+                f'border:1px solid {_pal["border"]};border-radius:12px;background:{_pal["card"]};margin:8px 0">'
+                f'<div style="flex:1">'
+                f'<div style="font-weight:700;font-size:13px;color:{_pal["text"]}">'
+                f'{_br_txt(_it.get("name"))}'
+                f'<span style="margin-left:8px;font-size:9.5px;padding:2px 7px;border-radius:999px;'
+                f'background:{_qc}22;color:{_qc};border:1px solid {_qc}55">{_q}</span></div>'
+                f'<div style="font-size:11px;color:{_pal["muted"]};margin-top:3px">'
+                f'需求 {_br_num(_it.get("demand")):.0f} · 竞争 {_br_num(_it.get("competition")):.0f} · '
+                f'毛利 {_br_num(_it.get("margin")):.0f}% · 建议价 {_br_txt(_it.get("price_low"))}-'
+                f'{_br_txt(_it.get("price_high"))} USD</div>'
+                f'<div style="font-size:11px;color:{_pal["muted"]};margin-top:3px">'
+                f'💡 {_br_txt(_it.get("reason"))}　⚠ {_br_txt(_it.get("risk"))}</div>'
+                f'</div>'
+                f'<div style="min-width:44px;text-align:center;padding:4px 8px;border-radius:9px;'
+                f'background:{_cls}22;color:{_cls};font-weight:800;font-size:13px">{_sc:.0f}</div>'
+                f"</div>"
+            )
+        st.markdown(_list, unsafe_allow_html=True)
+    else:
+        st.info("填好品类与市场，点「🚀 扫描品类机会」生成选品雷达。")
