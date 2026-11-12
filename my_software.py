@@ -447,7 +447,8 @@ def load_vault():
         return pd.DataFrame(columns=VAULT_COLUMNS)
     if df.empty:
         return pd.DataFrame(columns=VAULT_COLUMNS)
-    for col in VAULT_COLUMNS:        if col not in df.columns:
+    for col in VAULT_COLUMNS:
+        if col not in df.columns:
             df[col] = pd.NA
     for col in ("Cost", "Sell", "Profit", "Margin"):
         df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -646,7 +647,8 @@ def extract_pdf_text(file_bytes):
     if not HAS_PYPDF:
         return None, 0, "未安装 pypdf，请在终端执行: pip install pypdf"
     import io
-    try:        reader = PdfReader(io.BytesIO(file_bytes))
+    try:
+        reader = PdfReader(io.BytesIO(file_bytes))
         if reader.is_encrypted:
             try:
                 reader.decrypt("")
@@ -844,7 +846,9 @@ def render_reverse_dashboard(data, p):
     hero = (
         f'<div class="br-hero"><div><div class="k">Business Reverse Engineering</div>'
         f'<div class="v">{product}</div></div><div class="tag">{currency}</div></div>'
-    )    # ---- 成本拆解 ----
+    )
+
+    # ---- 成本拆解 ----
     colors = [p["accent"], p["accent2"], p["good"], p["warn"], p["bad"]]
     bars = ""
     for idx, item in enumerate(_br_list(cost.get("breakdown"))[:5]):
@@ -1043,7 +1047,8 @@ with tab5:
                 "⬇ 导出分析 JSON",
                 data=json.dumps(st.session_state["reverse_data"], ensure_ascii=False, indent=2),
                 file_name="reverse_engineering.json",
-                mime="application/json",                key="dl_reverse",
+                mime="application/json",
+                key="dl_reverse",
             )
         elif st.session_state.get("reverse_raw"):
             st.warning("AI 返回的不是标准 JSON，先展示原始内容：")
@@ -1242,7 +1247,8 @@ def build_compare_report(records, is_dark):
 
     return f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><title>供应商比价报告</title>
-<style>body{{margin:0;padding:40px;background:{bg};color:{fg};font:14px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}}
+<style>
+body{{margin:0;padding:40px;background:{bg};color:{fg};font:14px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}}
 h1{{font-size:28px;margin:0 0 4px;letter-spacing:-.5px;color:{gold}}}
 .meta{{color:{muted};font-size:12px;margin-bottom:26px}}
 table{{width:100%;border-collapse:collapse;background:{card};border:1px solid {border};border-radius:12px;overflow:hidden}}
@@ -1441,7 +1447,8 @@ def _svg_bubble_chart(items, p, w=780, h=430, pad=56):
         f'<rect x="{mid}" y="{midy}" width="{w - pad - mid}" height="{h - pad - midy}" fill="{p["bad"]}" opacity=".05"/>'
     )
     labels = [("低竞争 · 高需求", pad + 10, pad + 20), ("高竞争 · 高需求", mid + 10, pad + 20),
-              ("低竞争 · 低需求", pad + 10, h - pad - 8), ("高竞争 · 低需求", mid + 10, h - pad - 8)]    for text, x, y in labels:
+              ("低竞争 · 低需求", pad + 10, h - pad - 8), ("高竞争 · 低需求", mid + 10, h - pad - 8)]
+    for text, x, y in labels:
         body += f'<text x="{x}" y="{y}" font-size="10" fill="{p["muted"]}" opacity=".8">{text}</text>'
 
     body += (
